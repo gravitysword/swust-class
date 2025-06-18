@@ -462,8 +462,9 @@
             }
 
             .timetable {
-    grid-auto-rows: 6.5vh; /* 略微增加行高 */
-  }
+                grid-auto-rows: 6.5vh; /* 略微增加行高 */
+                grid-template-columns: 40px repeat(7, minmax(0, 1fr)); /* 确保列宽度均匀 */
+            }
 
             .time-slot {
                 font-size: 0.7rem;
@@ -477,13 +478,13 @@
             }
 
             .course-name {
-            font-weight: 600;
-            margin-bottom: 2px;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+                font-weight: 600;
+                margin-bottom: 2px;
+                font-size: 0.9rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
 
             .course-location {
                 font-size: 0.65rem;
@@ -493,10 +494,10 @@
             }
 
             .course-card {
-    padding: 3px; /* 减小内边距 */
-    justify-content: flex-start; /* 顶部对齐 */
-    overflow: hidden; /* 防止内容溢出 */
-  }
+                padding: 3px; /* 减小内边距 */
+                justify-content: flex-start; /* 顶部对齐 */
+                overflow: hidden; /* 防止内容溢出 */
+            }
 
             .divider {
                 margin: 1px 0;
@@ -528,7 +529,8 @@
 
         @media (max-width: 480px) {
             .timetable {
-                grid-auto-rows:6.3vh;
+                grid-auto-rows: 6.3vh;
+                grid-template-columns: 30px repeat(7, minmax(0, 1fr)); /* 确保列宽度均匀 */
             }
 
             .time-slot {
@@ -542,9 +544,9 @@
             }
 
             .course-name {
-    font-size: 0.8rem; /* 进一步减小字体 */
-    line-height: 1.1;
-  }
+                font-size: 0.8rem; /* 进一步减小字体 */
+                line-height: 1.1;
+            }
 
             .course-location {
                 font-size: 0.6rem;
@@ -959,73 +961,73 @@
         }
 
         // 添加时间槽
-function addTimeSlot(slotNum, slotLabel) {
-    const timetableEl = document.getElementById('timetable');
+        function addTimeSlot(slotNum, slotLabel) {
+            const timetableEl = document.getElementById('timetable');
 
-    // 添加时间标签
-    const timeSlotEl = document.createElement('div');
-    timeSlotEl.className = 'time-slot';
-    timeSlotEl.textContent = slotLabel;
-    timetableEl.appendChild(timeSlotEl);
+            // 添加时间标签
+            const timeSlotEl = document.createElement('div');
+            timeSlotEl.className = 'time-slot';
+            timeSlotEl.textContent = slotLabel;
+            timetableEl.appendChild(timeSlotEl);
 
-    // 添加每天的时间槽
-    for (let day = 1; day <= 7; day++) {
-        const daySlotEl = document.createElement('div');
-        daySlotEl.className = 'day-slot';
-        daySlotEl.dataset.day = day;
-        daySlotEl.dataset.slot = slotNum;
-        daySlotEl.style.position = 'relative'; // 为多节课卡片定位做准备
+            // 添加每天的时间槽
+            for (let day = 1; day <= 7; day++) {
+                const daySlotEl = document.createElement('div');
+                daySlotEl.className = 'day-slot';
+                daySlotEl.dataset.day = day;
+                daySlotEl.dataset.slot = slotNum;
+                daySlotEl.style.position = 'relative'; // 为多节课卡片定位做准备
 
-        // 查找这个时间槽的课程
-        const slotCourses = courses.filter(course =>
-            course.day === day &&
-            course.time_slots.includes(slotNum) &&
-            course.weeks.includes(currentWeek)
-        );
+                // 查找这个时间槽的课程
+                const slotCourses = courses.filter(course =>
+                    course.day === day &&
+                    course.time_slots.includes(slotNum) &&
+                    course.weeks.includes(currentWeek)
+                );
 
-        // 添加课程卡片 - 只添加连续课程的第一节课
-        const isFirstSlot = slotCourses.some(course =>
-            course.time_slots[0] === slotNum
-        );
+                // 添加课程卡片 - 只添加连续课程的第一节课
+                const isFirstSlot = slotCourses.some(course =>
+                    course.time_slots[0] === slotNum
+                );
 
-        if (isFirstSlot) {
-            if (slotCourses.length > 1) {
-                const randomCourse = slotCourses[0];
-                const courseCard = createCourseCard(randomCourse, slotCourses, slotNum);
-                daySlotEl.appendChild(courseCard);
+                if (isFirstSlot) {
+                    if (slotCourses.length > 1) {
+                        const randomCourse = slotCourses[0];
+                        const courseCard = createCourseCard(randomCourse, slotCourses, slotNum);
+                        daySlotEl.appendChild(courseCard);
 
-                // 设置卡片高度
-                const duration = randomCourse.time_slots.length;
-                if (duration > 1) {
-                    courseCard.style.gridRow = `span ${duration}`;
-                    courseCard.style.height = `calc(${duration * 100}% + ${(duration - 1) * 3}px)`;
+                        // 设置卡片高度
+                        const duration = randomCourse.time_slots.length;
+                        if (duration > 1) {
+                            courseCard.style.gridRow = `span ${duration}`;
+                            courseCard.style.height = `calc(${duration * 100}% + ${(duration - 1) * 3}px)`;
+                        }
+                    } else {
+                        const course = slotCourses[0];
+                        const courseCard = createCourseCard(course, [], slotNum);
+                        daySlotEl.appendChild(courseCard);
+
+                        // 设置卡片高度
+                        const duration = course.time_slots.length;
+                        if (duration > 1) {
+                            courseCard.style.gridRow = `span ${duration}`;
+                            courseCard.style.height = `calc(${duration * 100}% + ${(duration - 1) * 3}px)`;
+                        }
+                    }
                 }
-            } else {
-                const course = slotCourses[0];
-                const courseCard = createCourseCard(course, [], slotNum);
-                daySlotEl.appendChild(courseCard);
 
-                // 设置卡片高度
-                const duration = course.time_slots.length;
-                if (duration > 1) {
-                    courseCard.style.gridRow = `span ${duration}`;
-                    courseCard.style.height = `calc(${duration * 100}% + ${(duration - 1) * 3}px)`;
+                // 为课程占用的所有时间槽添加点击事件
+                if (slotCourses.length > 0) {
+                    daySlotEl.addEventListener('click', (event) => {
+                        // 防止事件冒泡到父元素
+                        event.stopPropagation();
+                        showCourseDetails(slotCourses);
+                    });
                 }
+
+                timetableEl.appendChild(daySlotEl);
             }
         }
-
-        // 为课程占用的所有时间槽添加点击事件
-        if (slotCourses.length > 0) {
-            daySlotEl.addEventListener('click', (event) => {
-                // 防止事件冒泡到父元素
-                event.stopPropagation();
-                showCourseDetails(slotCourses);
-            });
-        }
-
-        timetableEl.appendChild(daySlotEl);
-    }
-}
 
         // 创建课程卡片（仅显示课程名和地点）
         function createCourseCard(course, conflictCourses, slotNum) {
