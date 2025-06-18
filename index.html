@@ -953,13 +953,6 @@
             for (let i = 0; i < 12; i++) {
                 const slotNum = i + 1;
 
-                // 添加时间段分隔线
-                if (slotNum === 5 || slotNum === 9) {
-                    const divider = document.createElement('div');
-                    divider.className = 'divider';
-                    timetableEl.appendChild(divider);
-                }
-
                 addTimeSlot(slotNum, timeSlots[i].label);
             }
 
