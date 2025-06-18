@@ -48,7 +48,8 @@
             color: var(--dark);
             transition: var(--transition);
             line-height: 1.4;
-            padding: 15px;
+            /* 移除原有的 padding */
+            /* padding: 15px; */
             background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
         }
 
@@ -65,6 +66,9 @@
             overflow: hidden;
             display: flex;
             flex-direction: row;
+            /* 在移动端让容器宽度占满屏幕 */
+            width: 100%;
+            border-radius: 0;
         }
 
         .dark-mode .container {
@@ -120,7 +124,8 @@
             font-weight: 500;
             color: rgba(255, 255, 255, 0.8);
         }
-        label { 
+
+        label {
             font-size: 0.8rem;
         }
 
@@ -214,7 +219,7 @@
         .timetable {
             display: grid;
             grid-template-columns: 50px repeat(7, 1fr);
-            grid-auto-rows: 50px;
+            grid-auto-rows: 7.5vh;
             gap: 3px;
         }
 
@@ -268,6 +273,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+
         }
 
         .course-location {
@@ -393,19 +399,32 @@
 
         @media (max-width: 768px) {
             body {
-                padding: 8px;
+                /* 移除原有的 padding */
+                /* padding: 8px; */
             }
-            
+
             .container {
                 flex-direction: column;
-                border-radius: 8px;
+                border-radius: 0;
+                /* 移除原有的 margin */
+                margin: 0;
             }
 
             .sidebar {
                 width: 100%;
                 height: auto;
                 position: relative;
-                padding: 15px;
+                padding: 10px; /* 适当减少内边距以压缩高度 */
+            }
+
+            .sidebar.active {
+                display: flex;
+            }
+
+            /* 隐藏除 logo 和 controls 之外的元素 */
+            .sidebar .details-card,
+            .sidebar .course-details {
+                display: none;
             }
 
             .controls {
@@ -420,18 +439,19 @@
                 min-width: 50px;
                 flex: 1;
             }
-            
+
             .control-group label {
                 margin-right: 8px;
             }
-            
-            select, button {
+
+            select,
+            button {
                 max-width: none;
                 width: 100%;
                 font-size: 0.9rem;
                 padding: 10px;
             }
-            
+
             .logo {
                 font-size: 1.3rem;
                 padding-bottom: 10px;
@@ -440,32 +460,30 @@
             .logo i {
                 font-size: 1.5rem;
             }
-            
+
             .timetable {
-                grid-template-columns: 35px repeat(7, minmax(40px, 1fr));
-                grid-auto-rows: 40px;
-            }
+    grid-auto-rows: 6.5vh; /* 略微增加行高 */
+  }
 
             .time-slot {
                 font-size: 0.7rem;
                 padding: 2px;
             }
-            
-            .time-header, .day-header {
+
+            .time-header,
+            .day-header {
                 font-size: 0.8rem;
                 padding: 6px 2px;
             }
-            
+
             .course-name {
-                font-size: 0.75rem;
-                white-space: normal;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                line-height: 1.2;
-            }
+            font-weight: 600;
+            margin-bottom: 2px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
             .course-location {
                 font-size: 0.65rem;
@@ -473,79 +491,83 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-            
+
             .course-card {
-                padding: 4px;
-                font-size: 0.75rem;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-            }
-            
+    padding: 3px; /* 减小内边距 */
+    justify-content: flex-start; /* 顶部对齐 */
+    overflow: hidden; /* 防止内容溢出 */
+  }
+
             .divider {
                 margin: 1px 0;
             }
-            
+
             .footer {
                 padding: 10px;
                 font-size: 0.7rem;
             }
-            
+
             .details-card {
                 max-height: 200px;
                 padding: 10px;
             }
-            
+
             .details-title {
                 font-size: 1rem;
             }
-            
-            .detail-label, .detail-value {
+
+            .detail-label,
+            .detail-value {
                 font-size: 0.8rem;
             }
+
+            .mobile-menu-btn {
+                display: flex;
+            }
         }
-        
+
         @media (max-width: 480px) {
             .timetable {
-                grid-template-columns: 30px repeat(7, minmax(30px, 1fr));
-                grid-auto-rows: 35px;
+                grid-auto-rows:6.3vh;
             }
-            
+
             .time-slot {
                 font-size: 0.6rem;
             }
-            
-            .time-header, .day-header {
+
+            .time-header,
+            .day-header {
                 font-size: 0.7rem;
                 padding: 4px 1px;
             }
-            
+
             .course-name {
-                font-size: 0.65rem;
-                -webkit-line-clamp: 1;
-            }
-            
+    font-size: 0.8rem; /* 进一步减小字体 */
+    line-height: 1.1;
+  }
+
             .course-location {
                 font-size: 0.6rem;
             }
-            
+
             .course-card {
                 padding: 2px;
             }
-            
+
             .controls {
                 gap: 8px;
             }
-            
-            select, button {
+
+            select,
+            button {
                 font-size: 0.8rem;
                 padding: 8px;
             }
-            
+
             .logo {
                 font-size: 1.1rem;
             }
-            
+
             .logo i {
                 font-size: 1.3rem;
             }
@@ -574,7 +596,7 @@
             border-radius: var(--border-radius);
             position: relative;
         }
-        
+
         .dark-mode .modal-content {
             background-color: #1e1e2e;
         }
@@ -594,7 +616,7 @@
             color: black;
             text-decoration: none;
         }
-        
+
         .dark-mode .close:hover,
         .dark-mode .close:focus {
             color: white;
@@ -616,7 +638,7 @@
             padding: 2px 4px;
             border-bottom-left-radius: var(--border-radius);
         }
-        
+
         /* 移动端菜单按钮 */
         .mobile-menu-btn {
             display: none;
@@ -632,30 +654,7 @@
             height: 40px;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        
-        @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: flex;
-            }
-            
-            .sidebar {
-                display: none;
-            }
-            
-            .sidebar.active {
-                display: flex;
-            }
-        }
-        
-        /* 课程卡片自适应高度 */
-        .course-card.multi-slot {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: calc(100% - 6px);
-            margin: 3px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
@@ -664,7 +663,7 @@
     <button class="mobile-menu-btn" id="menu-btn">
         <i class="fas fa-bars"></i>
     </button>
-    
+
     <div class="container">
         <div class="sidebar" id="sidebar">
             <div class="logo">
@@ -960,71 +959,80 @@
         }
 
         // 添加时间槽
-        function addTimeSlot(slotNum, slotLabel) {
-            const timetableEl = document.getElementById('timetable');
+function addTimeSlot(slotNum, slotLabel) {
+    const timetableEl = document.getElementById('timetable');
 
-            // 添加时间标签
-            const timeSlotEl = document.createElement('div');
-            timeSlotEl.className = 'time-slot';
-            timeSlotEl.textContent = slotLabel;
-            timetableEl.appendChild(timeSlotEl);
+    // 添加时间标签
+    const timeSlotEl = document.createElement('div');
+    timeSlotEl.className = 'time-slot';
+    timeSlotEl.textContent = slotLabel;
+    timetableEl.appendChild(timeSlotEl);
 
-            // 添加每天的时间槽
-            for (let day = 1; day <= 7; day++) {
-                const daySlotEl = document.createElement('div');
-                daySlotEl.className = 'day-slot';
-                daySlotEl.dataset.day = day;
-                daySlotEl.dataset.slot = slotNum;
-                daySlotEl.style.position = 'relative'; // 为多节课卡片定位做准备
+    // 添加每天的时间槽
+    for (let day = 1; day <= 7; day++) {
+        const daySlotEl = document.createElement('div');
+        daySlotEl.className = 'day-slot';
+        daySlotEl.dataset.day = day;
+        daySlotEl.dataset.slot = slotNum;
+        daySlotEl.style.position = 'relative'; // 为多节课卡片定位做准备
 
-                // 查找这个时间槽的课程
-                const slotCourses = courses.filter(course =>
-                    course.day === day &&
-                    course.time_slots.includes(slotNum) &&
-                    course.weeks.includes(currentWeek)
-                );
+        // 查找这个时间槽的课程
+        const slotCourses = courses.filter(course =>
+            course.day === day &&
+            course.time_slots.includes(slotNum) &&
+            course.weeks.includes(currentWeek)
+        );
 
-                // 添加课程卡片 - 只添加连续课程的第一节课
-                const isFirstSlot = slotCourses.some(course =>
-                    course.time_slots[0] === slotNum
-                );
+        // 添加课程卡片 - 只添加连续课程的第一节课
+        const isFirstSlot = slotCourses.some(course =>
+            course.time_slots[0] === slotNum
+        );
 
-                if (isFirstSlot) {
-                    if (slotCourses.length > 1) {
-                        const randomCourse = slotCourses[0];
-                        const courseCard = createCourseCard(randomCourse, slotCourses, slotNum);
-                        daySlotEl.appendChild(courseCard);
-                        
-                        // 设置卡片高度
-                        const duration = randomCourse.time_slots.length;
-                        if (duration > 1) {
-                            courseCard.style.gridRow = `span ${duration}`;
-                            courseCard.style.height = `calc(${duration * 100}% + ${(duration - 1) * 3}px)`;
-                        }
-                    } else {
-                        const course = slotCourses[0];
-                        const courseCard = createCourseCard(course, [], slotNum);
-                        daySlotEl.appendChild(courseCard);
-                        
-                        // 设置卡片高度
-                        const duration = course.time_slots.length;
-                        if (duration > 1) {
-                            courseCard.style.gridRow = `span ${duration}`;
-                            courseCard.style.height = `calc(${duration * 100}% + ${(duration - 1) * 3}px)`;
-                        }
-                    }
+        if (isFirstSlot) {
+            if (slotCourses.length > 1) {
+                const randomCourse = slotCourses[0];
+                const courseCard = createCourseCard(randomCourse, slotCourses, slotNum);
+                daySlotEl.appendChild(courseCard);
+
+                // 设置卡片高度
+                const duration = randomCourse.time_slots.length;
+                if (duration > 1) {
+                    courseCard.style.gridRow = `span ${duration}`;
+                    courseCard.style.height = `calc(${duration * 100}% + ${(duration - 1) * 3}px)`;
                 }
+            } else {
+                const course = slotCourses[0];
+                const courseCard = createCourseCard(course, [], slotNum);
+                daySlotEl.appendChild(courseCard);
 
-                timetableEl.appendChild(daySlotEl);
+                // 设置卡片高度
+                const duration = course.time_slots.length;
+                if (duration > 1) {
+                    courseCard.style.gridRow = `span ${duration}`;
+                    courseCard.style.height = `calc(${duration * 100}% + ${(duration - 1) * 3}px)`;
+                }
             }
         }
+
+        // 为课程占用的所有时间槽添加点击事件
+        if (slotCourses.length > 0) {
+            daySlotEl.addEventListener('click', (event) => {
+                // 防止事件冒泡到父元素
+                event.stopPropagation();
+                showCourseDetails(slotCourses);
+            });
+        }
+
+        timetableEl.appendChild(daySlotEl);
+    }
+}
 
         // 创建课程卡片（仅显示课程名和地点）
         function createCourseCard(course, conflictCourses, slotNum) {
             const card = document.createElement('div');
             card.className = 'course-card';
             card.style.backgroundColor = course.color;
-            
+
             // 如果是多节课，添加特殊类
             const duration = course.time_slots.length;
             if (duration > 1 && course.time_slots[0] === slotNum) {
@@ -1119,32 +1127,9 @@
                     creditItem.className = 'detail-item';
                     creditItem.innerHTML = `
                         <div class="detail-label">课程学分：</div>
-                        <div class="detail-value">${course.credit}学分</div>
+                        <div class="detail-value">${course.credit}</div>
                     `;
                     detailList.appendChild(creditItem);
-
-                    const dayNames = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-                    const dayName = dayNames[course.day - 1];
-                    const slotStart = Math.min(...course.time_slots);
-                    const slotEnd = Math.max(...course.time_slots);
-                    const timeText = `${dayName} ${slotStart}-${slotEnd}节`;
-
-                    const timeItem = document.createElement('div');
-                    timeItem.className = 'detail-item';
-                    timeItem.innerHTML = `
-                        <div class="detail-label">上课时间：</div>
-                        <div class="detail-value">${timeText}</div>
-                    `;
-                    detailList.appendChild(timeItem);
-
-                    const weeksRange = `${course.weeks[0]}-${course.weeks[course.weeks.length - 1]}周`;
-                    const weeksItem = document.createElement('div');
-                    weeksItem.className = 'detail-item';
-                    weeksItem.innerHTML = `
-                        <div class="detail-label">周次范围：</div>
-                        <div class="detail-value">${weeksRange}</div>
-                    `;
-                    detailList.appendChild(weeksItem);
                 });
 
                 modal.style.display = "block";
@@ -1159,157 +1144,59 @@
                     }
                 }
             } else {
-                const detailCard = document.getElementById('course-detail-card');
-                detailCard.innerHTML = `
-                    <div class="details-header">
-                        <div class="details-title">课程详情</div>
-                    </div>
-                `;
+                // 桌面端显示课程详情逻辑
+                const detailName = document.getElementById('detail-name');
+                const detailType = document.getElementById('detail-type');
+                const detailTeacher = document.getElementById('detail-teacher');
+                const detailLocation = document.getElementById('detail-location');
+                const detailTime = document.getElementById('detail-time');
+                const detailWeeks = document.getElementById('detail-weeks');
+                const detailCredit = document.getElementById('detail-credit');
 
-                courses.forEach((course, index) => {
-                    if (index > 0) {
-                        const divider = document.createElement('hr');
-                        detailCard.appendChild(divider);
-                    }
-
-                    const detailItem = document.createElement('div');
-                    detailItem.className = 'detail-item';
-                    detailItem.innerHTML = `
-                        <div class="detail-label">课程名称：</div>
-                        <div class="detail-value">${course.name}</div>
-                    `;
-                    detailCard.appendChild(detailItem);
-
-                    const typeItem = document.createElement('div');
-                    typeItem.className = 'detail-item';
-                    typeItem.innerHTML = `
-                        <div class="detail-label">课程类型：</div>
-                        <div class="detail-value">${course.type}</div>
-                    `;
-                    detailCard.appendChild(typeItem);
-
-                    const teacherItem = document.createElement('div');
-                    teacherItem.className = 'detail-item';
-                    teacherItem.innerHTML = `
-                        <div class="detail-label">授课教师：</div>
-                        <div class="detail-value">${course.teacher}</div>
-                    `;
-                    detailCard.appendChild(teacherItem);
-
-                    const locationItem = document.createElement('div');
-                    locationItem.className = 'detail-item';
-                    locationItem.innerHTML = `
-                        <div class="detail-label">上课地点：</div>
-                        <div class="detail-value">${course.location}</div>
-                    `;
-                    detailCard.appendChild(locationItem);
-
-                    const creditItem = document.createElement('div');
-                    creditItem.className = 'detail-item';
-                    creditItem.innerHTML = `
-                        <div class="detail-label">课程学分：</div>
-                        <div class="detail-value">${course.credit}学分</div>
-                    `;
-                    detailCard.appendChild(creditItem);
-
-                    const dayNames = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-                    const dayName = dayNames[course.day - 1];
-                    const slotStart = Math.min(...course.time_slots);
-                    const slotEnd = Math.max(...course.time_slots);
-                    const timeText = `${dayName} ${slotStart}-${slotEnd}节`;
-
-                    const timeItem = document.createElement('div');
-                    timeItem.className = 'detail-item';
-                    timeItem.innerHTML = `
-                        <div class="detail-label">上课时间：</div>
-                        <div class="detail-value">${timeText}</div>
-                    `;
-                    detailCard.appendChild(timeItem);
-
-                    const weeksRange = `${course.weeks[0]}-${course.weeks[course.weeks.length - 1]}周`;
-                    const weeksItem = document.createElement('div');
-                    weeksItem.className = 'detail-item';
-                    weeksItem.innerHTML = `
-                        <div class="detail-label">周次范围：</div>
-                        <div class="detail-value">${weeksRange}</div>
-                    `;
-                    detailCard.appendChild(weeksItem);
-                });
-
-                // 添加动画效果
-                detailCard.style.animation = 'none';
-                detailCard.offsetHeight; // 触发重绘
-                detailCard.style.animation = 'fadeIn 0.3s ease-out forwards';
+                const course = courses[0];
+                detailName.textContent = course.name;
+                detailType.textContent = course.type;
+                detailTeacher.textContent = course.teacher;
+                detailLocation.textContent = course.location;
+                detailTime.textContent = `${getDayName(course.day)} ${course.time_slots.join('-')}节`;
+                detailWeeks.textContent = course.weeks.join('-');
+                detailCredit.textContent = `${course.credit}学分`;
             }
         }
 
-        // 深色模式切换
-        document.getElementById('dark-mode-btn').addEventListener('click', function () {
+        // 获取星期几的名称
+        function getDayName(day) {
+            const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+            return days[day - 1];
+        }
+
+        // 初始化课程表
+        initTimetable();
+
+        // 教学周选择事件
+        const weekSelect = document.getElementById('week-select');
+        weekSelect.addEventListener('change', function () {
+            const selectedWeek = this.value === 'current' ? currentWeek : parseInt(this.value);
+            currentWeek = selectedWeek;
+            initTimetable();
+        });
+
+        // 深色模式切换事件
+        const darkModeBtn = document.getElementById('dark-mode-btn');
+        darkModeBtn.addEventListener('click', function () {
             document.body.classList.toggle('dark-mode');
-            this.classList.toggle('active');
-
-            // 保存用户偏好
-            const isDarkMode = document.body.classList.contains('dark-mode');
-            localStorage.setItem('darkMode', isDarkMode);
-
-            // 更新按钮图标
-            const icon = this.querySelector('i');
-            icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
-            this.innerHTML = isDarkMode ?
-                `<i class="fas fa-sun"></i> 浅色模式` :
-                `<i class="fas fa-moon"></i> 深色模式`;
-        });
-
-        // 教学周切换
-        document.getElementById('week-select').addEventListener('change', function () {
-            if (this.value === 'current') {
-                currentWeek = 12; // 默认为第12周
+            if (document.body.classList.contains('dark-mode')) {
+                this.innerHTML = '<i class="fas fa-sun"></i> 浅色模式';
             } else {
-                currentWeek = parseInt(this.value);
+                this.innerHTML = '<i class="fas fa-moon"></i> 深色模式';
             }
-
-            // 更新选择框文本
-            this.querySelector('option[value="current"]').textContent =
-                `当前周 (第${currentWeek}周)`;
-
-            // 更新周指示器
-            document.getElementById('current-week-display').textContent = currentWeek;
-
-            // 重新初始化课表
-            initTimetable();
         });
-        
-        // 移动端菜单按钮
-        document.getElementById('menu-btn').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
+
+        // 移动端菜单按钮事件
+        const menuBtn = document.getElementById('menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        menuBtn.addEventListener('click', function () {
             sidebar.classList.toggle('active');
-            
-            // 更新图标
-            const icon = this.querySelector('i');
-            if (sidebar.classList.contains('active')) {
-                icon.className = 'fas fa-times';
-            } else {
-                icon.className = 'fas fa-bars';
-            }
-        });
-
-        // 检查保存的深色模式设置
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.body.classList.add('dark-mode');
-            const darkModeBtn = document.getElementById('dark-mode-btn');
-            darkModeBtn.classList.add('active');
-            darkModeBtn.innerHTML = `<i class="fas fa-sun"></i> 浅色模式`;
-        }
-
-        // 初始化
-        document.addEventListener('DOMContentLoaded', function () {
-            initTimetable();
-            showCourseDetails([courses[0]]); // 默认显示第一个课程详情
-
-            // 更新数据时间
-            const now = new Date();
-            document.getElementById('update-time').textContent =
-                `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
         });
     </script>
 </body>
