@@ -48,9 +48,8 @@
             color: var(--dark);
             transition: var(--transition);
             line-height: 1.4;
-            /* 移除原有的 padding */
-            /* padding: 15px; */
             background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            padding: 10px;
         }
 
         .dark-mode body {
@@ -66,9 +65,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: row;
-            /* 在移动端让容器宽度占满屏幕 */
             width: 100%;
-            border-radius: 0;
         }
 
         .dark-mode .container {
@@ -87,7 +84,6 @@
             top: 0;
             max-height: 100vh;
             overflow-y: auto;
-            /* 添加滚动条 */
         }
 
         .dark-mode .sidebar {
@@ -143,14 +139,12 @@
             font-size: 0.8rem;
         }
 
-        /* 修复选择器在深色模式下的样式 */
         .dark-mode select {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.4);
             color: white;
         }
 
-        /* 修复选择器下拉选项的样式 */
         select option {
             color: #333;
         }
@@ -173,7 +167,6 @@
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-1px);
         }
-
 
         .main-content {
             flex: 1;
@@ -255,6 +248,7 @@
             justify-content: center;
             text-align: center;
             border: none;
+            width: 100%;
         }
 
         .course-card:hover {
@@ -273,7 +267,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-
         }
 
         .course-location {
@@ -295,7 +288,6 @@
             margin-top: 20px;
             display: grid;
             grid-template-columns: 1fr;
-            /* 确保在侧边栏中只有一列 */
             gap: 15px;
         }
 
@@ -303,12 +295,8 @@
             background: white;
             border-radius: var(--border-radius);
             padding: 15px;
-            /* 略微减少内边距 */
-            box-shadow: var(--card-shadow);
             max-height: 300px;
-            /* 设置最大高度 */
             overflow-y: auto;
-            /* 在内容过多时显示滚动条 */
         }
 
         .dark-mode .details-card {
@@ -320,9 +308,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
-            /* 减少底部间距 */
             padding-bottom: 8px;
-            /* 减少底部内边距 */
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
 
@@ -332,7 +318,6 @@
 
         .details-title {
             font-size: 1.2rem;
-            /* 略微减小标题字体 */
             font-weight: 700;
             color: var(--primary);
         }
@@ -343,17 +328,14 @@
 
         .detail-item {
             margin-bottom: 8px;
-            /* 减少底部间距 */
             display: flex;
         }
 
         .detail-label {
             font-weight: 600;
             min-width: 70px;
-            /* 略微减小标签宽度 */
             color: var(--gray);
             font-size: 0.85rem;
-            /* 略微减小字体 */
         }
 
         .dark-mode .detail-label {
@@ -363,14 +345,12 @@
         .detail-value {
             flex: 1;
             font-size: 0.85rem;
-            /* 略微减小字体 */
             color: #333
         }
 
         .dark-mode .detail-value {
             color: white;
         }
-
 
         .footer {
             text-align: center;
@@ -399,14 +379,12 @@
 
         @media (max-width: 768px) {
             body {
-                /* 移除原有的 padding */
-                /* padding: 8px; */
+                padding: 5px;
             }
 
             .container {
                 flex-direction: column;
-                border-radius: 0;
-                /* 移除原有的 margin */
+                border-radius: 10px;
                 margin: 0;
             }
 
@@ -414,14 +392,14 @@
                 width: 100%;
                 height: auto;
                 position: relative;
-                padding: 10px; /* 适当减少内边距以压缩高度 */
+                padding: 15px;
+                border-radius: 10px 10px 0 0;
             }
 
             .sidebar.active {
                 display: flex;
             }
 
-            /* 隐藏除 logo 和 controls 之外的元素 */
             .sidebar .details-card,
             .sidebar .course-details {
                 display: none;
@@ -442,14 +420,15 @@
 
             .control-group label {
                 margin-right: 8px;
+                min-width: 60px;
             }
 
             select,
             button {
                 max-width: none;
                 width: 100%;
-                font-size: 0.9rem;
-                padding: 10px;
+                font-size: 0.85rem;
+                padding: 8px;
             }
 
             .logo {
@@ -462,8 +441,7 @@
             }
 
             .timetable {
-                grid-auto-rows: 6.5vh; /* 略微增加行高 */
-                grid-template-columns: 40px repeat(7, minmax(0, 1fr)); /* 确保列宽度均匀 */
+                grid-auto-rows: 6.5vh;
             }
 
             .time-slot {
@@ -478,25 +456,18 @@
             }
 
             .course-name {
-                font-weight: 600;
-                margin-bottom: 2px;
-                font-size: 0.9rem;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                font-size: 0.8rem;
+                line-height: 1.1;
             }
 
             .course-location {
                 font-size: 0.65rem;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
             }
 
             .course-card {
-                padding: 3px; /* 减小内边距 */
-                justify-content: flex-start; /* 顶部对齐 */
-                overflow: hidden; /* 防止内容溢出 */
+                padding: 4px;
+                justify-content: flex-start;
+                overflow: hidden;
             }
 
             .divider {
@@ -505,7 +476,7 @@
 
             .footer {
                 padding: 10px;
-                font-size: 0.7rem;
+                font-size: 0.75rem;
             }
 
             .details-card {
@@ -525,27 +496,38 @@
             .mobile-menu-btn {
                 display: flex;
             }
+            
+            /* 优化网格布局 */
+            .time-axis {
+                grid-template-columns: 40px repeat(7, minmax(0, 1fr));
+            }
+            
+            .timetable {
+                grid-template-columns: 40px repeat(7, minmax(0, 1fr));
+            }
+            
+            .course-card {
+                min-height: 100%;
+            }
         }
 
         @media (max-width: 480px) {
             .timetable {
-                grid-auto-rows: 6.3vh;
-                grid-template-columns: 30px repeat(7, minmax(0, 1fr)); /* 确保列宽度均匀 */
+                grid-auto-rows: 6vh;
             }
 
             .time-slot {
-                font-size: 0.6rem;
+                font-size: 0.65rem;
             }
 
             .time-header,
             .day-header {
-                font-size: 0.7rem;
-                padding: 4px 1px;
+                font-size: 0.75rem;
+                padding: 5px 1px;
             }
 
             .course-name {
-                font-size: 0.8rem; /* 进一步减小字体 */
-                line-height: 1.1;
+                font-size: 0.75rem;
             }
 
             .course-location {
@@ -553,7 +535,7 @@
             }
 
             .course-card {
-                padding: 2px;
+                padding: 3px;
             }
 
             .controls {
@@ -563,7 +545,7 @@
             select,
             button {
                 font-size: 0.8rem;
-                padding: 8px;
+                padding: 7px;
             }
 
             .logo {
@@ -572,6 +554,16 @@
 
             .logo i {
                 font-size: 1.3rem;
+            }
+            
+            .control-group {
+                min-width: 100px;
+                flex-basis: calc(50% - 5px);
+            }
+            
+            .control-group label {
+                min-width: 50px;
+                font-size: 0.75rem;
             }
         }
 
@@ -657,6 +649,17 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 添加动画效果 */
+        .course-card {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        /* 优化网格项对齐 */
+        .day-slot {
+            min-height: 100%;
+            position: relative;
         }
     </style>
 </head>
@@ -976,7 +979,7 @@
                 daySlotEl.className = 'day-slot';
                 daySlotEl.dataset.day = day;
                 daySlotEl.dataset.slot = slotNum;
-                daySlotEl.style.position = 'relative'; // 为多节课卡片定位做准备
+                daySlotEl.style.position = 'relative';
 
                 // 查找这个时间槽的课程
                 const slotCourses = courses.filter(course =>
@@ -1019,7 +1022,6 @@
                 // 为课程占用的所有时间槽添加点击事件
                 if (slotCourses.length > 0) {
                     daySlotEl.addEventListener('click', (event) => {
-                        // 防止事件冒泡到父元素
                         event.stopPropagation();
                         showCourseDetails(slotCourses);
                     });
@@ -1055,9 +1057,8 @@
                 card.appendChild(conflictLabel);
             }
 
-            // 点击事件 - 使用箭头函数保持this上下文
+            // 点击事件
             card.addEventListener('click', (event) => {
-                // 防止事件冒泡到父元素
                 event.stopPropagation();
                 showCourseDetails([course, ...conflictCourses]);
             });
@@ -1200,6 +1201,9 @@
         menuBtn.addEventListener('click', function () {
             sidebar.classList.toggle('active');
         });
+        
+        // 设置更新时间
+        document.getElementById('update-time').textContent = new Date().toLocaleString();
     </script>
 </body>
 
