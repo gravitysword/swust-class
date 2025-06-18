@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大学课程表系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border-radius: 6px;
+            --transition: all 0.3s ease;
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+            --divider-color: rgba(0, 0, 0, 0.1);
+            --warning: #f8961e;
+            --success: #4CAF50;
+            --info: #2196F3;
+            --danger: #F44336;
+            --purple: #9C27B0;
+            --teal: #00BCD4;
+            --orange: #FF9800;
+        }
+
+        .dark-mode {
+            --light: #121212;
+            --dark: #f8f9fa;
+            --gray: #adb5bd;
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            --card-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+            --divider-color: rgba(255, 255, 255, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            transition: var(--transition);
+            line-height: 1.4;
+            padding: 15px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+        }
+
+        .dark-mode body {
+            background: linear-gradient(135deg, #1a2a4a 0%, #0f1a30 100%);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .dark-mode .container {
+            background-color: #1e1e2e;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--primary), #5e72e4);
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: sticky;
+            top: 0;
+            max-height: 100vh;
+            overflow-y: auto;
+            /* 添加滚动条 */
+        }
+
+        .dark-mode .sidebar {
+            background: linear-gradient(180deg, #2d2d6e, #3f37c9);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-group label {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        label { 
+            font-size: 0.8rem;
+        }
+
+        select,
+        button {
+            max-width: 140px;
+            padding: 8px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.8rem;
+        }
+
+        /* 修复选择器在深色模式下的样式 */
+        .dark-mode select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+        }
+
+        /* 修复选择器下拉选项的样式 */
+        select option {
+            color: #333;
+        }
+
+        .dark-mode select option {
+            background-color: #1e1e2e;
+            color: white;
+        }
+
+        button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+
+        .main-content {
+            flex: 1;
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+        .timetable-container {
+            width: 100%;
+        }
+
+        .time-axis {
+            display: grid;
+            grid-template-columns: 50px repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .time-header,
+        .day-header {
+            padding: 8px 4px;
+            text-align: center;
+            font-weight: 600;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+        }
+
+        .dark-mode .time-header,
+        .dark-mode .day-header {
+            background: rgba(67, 97, 238, 0.2);
+        }
+
+        .day-header {
+            background: rgba(67, 97, 238, 0.15);
+            font-weight: 700;
+        }
+
+        .dark-mode .day-header {
+            background: rgba(67, 97, 238, 0.25);
+        }
+
+        .timetable {
+            display: grid;
+            grid-template-columns: 50px repeat(7, 1fr);
+            grid-auto-rows: 50px;
+            gap: 3px;
+        }
+
+        .time-slot {
+            padding: 4px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--gray);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: var(--border-radius);
+            font-weight: 600;
+        }
+
+        .dark-mode .time-slot {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .course-card {
+            padding: 6px;
+            border-radius: var(--border-radius);
+            color: white;
+            font-size: 0.85rem;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            border: none;
+        }
+
+        .course-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .dark-mode .course-card:hover {
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .course-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .course-location {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .divider {
+            grid-column: 1 / span 8;
+            height: 1px;
+            background: var(--divider-color);
+            margin: 2px 0;
+        }
+
+        .course-details {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            /* 确保在侧边栏中只有一列 */
+            gap: 15px;
+        }
+
+        .details-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            /* 略微减少内边距 */
+            box-shadow: var(--card-shadow);
+            max-height: 300px;
+            /* 设置最大高度 */
+            overflow-y: auto;
+            /* 在内容过多时显示滚动条 */
+        }
+
+        .dark-mode .details-card {
+            background: #1e1e2e;
+        }
+
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            /* 减少底部间距 */
+            padding-bottom: 8px;
+            /* 减少底部内边距 */
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .details-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .details-title {
+            font-size: 1.2rem;
+            /* 略微减小标题字体 */
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .dark-mode .details-title {
+            color: white;
+        }
+
+        .detail-item {
+            margin-bottom: 8px;
+            /* 减少底部间距 */
+            display: flex;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            min-width: 70px;
+            /* 略微减小标签宽度 */
+            color: var(--gray);
+            font-size: 0.85rem;
+            /* 略微减小字体 */
+        }
+
+        .dark-mode .detail-label {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .detail-value {
+            flex: 1;
+            font-size: 0.85rem;
+            /* 略微减小字体 */
+            color: #333
+        }
+
+        .dark-mode .detail-value {
+            color: white;
+        }
+
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            color: var(--gray);
+            font-size: 0.8rem;
+            background: rgba(0, 0, 0, 0.02);
+            margin-top: 15px;
+        }
+
+        .dark-mode .footer {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+            
+            .container {
+                flex-direction: column;
+                border-radius: 8px;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 15px;
+            }
+
+            .controls {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .control-group {
+                flex-direction: row;
+                align-items: center;
+                min-width: 50px;
+                flex: 1;
+            }
+            
+            .control-group label {
+                margin-right: 8px;
+            }
+            
+            select, button {
+                max-width: none;
+                width: 100%;
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+            
+            .logo {
+                font-size: 1.3rem;
+                padding-bottom: 10px;
+            }
+
+            .logo i {
+                font-size: 1.5rem;
+            }
+            
+            .timetable {
+                grid-template-columns: 35px repeat(7, minmax(40px, 1fr));
+                grid-auto-rows: 40px;
+            }
+
+            .time-slot {
+                font-size: 0.7rem;
+                padding: 2px;
+            }
+            
+            .time-header, .day-header {
+                font-size: 0.8rem;
+                padding: 6px 2px;
+            }
+            
+            .course-name {
+                font-size: 0.75rem;
+                white-space: normal;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                line-height: 1.2;
+            }
+
+            .course-location {
+                font-size: 0.65rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .course-card {
+                padding: 4px;
+                font-size: 0.75rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            
+            .divider {
+                margin: 1px 0;
+            }
+            
+            .footer {
+                padding: 10px;
+                font-size: 0.7rem;
+            }
+            
+            .details-card {
+                max-height: 200px;
+                padding: 10px;
+            }
+            
+            .details-title {
+                font-size: 1rem;
+            }
+            
+            .detail-label, .detail-value {
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .timetable {
+                grid-template-columns: 30px repeat(7, minmax(30px, 1fr));
+                grid-auto-rows: 35px;
+            }
+            
+            .time-slot {
+                font-size: 0.6rem;
+            }
+            
+            .time-header, .day-header {
+                font-size: 0.7rem;
+                padding: 4px 1px;
+            }
+            
+            .course-name {
+                font-size: 0.65rem;
+                -webkit-line-clamp: 1;
+            }
+            
+            .course-location {
+                font-size: 0.6rem;
+            }
+            
+            .course-card {
+                padding: 2px;
+            }
+            
+            .controls {
+                gap: 8px;
+            }
+            
+            select, button {
+                font-size: 0.8rem;
+                padding: 8px;
+            }
+            
+            .logo {
+                font-size: 1.1rem;
+            }
+            
+            .logo i {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            background-color: var(--light);
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 500px;
+            border-radius: var(--border-radius);
+            position: relative;
+        }
+        
+        .dark-mode .modal-content {
+            background-color: #1e1e2e;
+        }
+
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+        
+        .dark-mode .close:hover,
+        .dark-mode .close:focus {
+            color: white;
+        }
+
+        /* 冲突课程样式 */
+        .conflict-course {
+            background-color: var(--danger) !important;
+        }
+
+        /* 重课标签样式 */
+        .conflict-label {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--danger);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 4px;
+            border-bottom-left-radius: var(--border-radius);
+        }
+        
+        /* 移动端菜单按钮 */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 100;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .sidebar.active {
+                display: flex;
+            }
+        }
+        
+        /* 课程卡片自适应高度 */
+        .course-card.multi-slot {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: calc(100% - 6px);
+            margin: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="mobile-menu-btn" id="menu-btn">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fas fa-calendar-alt"></i>
+                <span>大学课程表系统</span>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="week-select">教学周：</label>
+                    <select id="week-select">
+                        <option value="current">当前周 (第12周)</option>
+                        <option value="1">第1周</option>
+                        <option value="2">第2周</option>
+                        <option value="3">第3周</option>
+                        <option value="4">第4周</option>
+                        <option value="5">第5周</option>
+                        <option value="6">第6周</option>
+                        <option value="7">第7周</option>
+                        <option value="8">第8周</option>
+                        <option value="9">第9周</option>
+                        <option value="10">第10周</option>
+                        <option value="11">第11周</option>
+                        <option value="12">第12周</option>
+                        <option value="13">第13周</option>
+                        <option value="14">第14周</option>
+                        <option value="15">第15周</option>
+                        <option value="16">第16周</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <button class="toggle-btn" id="dark-mode-btn">
+                        <i class="fas fa-moon"></i> 深色模式
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="details-card" style="background: rgba(255, 255, 255, 0.1);">
+                <div class="details-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.2);">
+                    <div class="details-title" style="color: white;">课程统计</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label" style="color: rgba(255, 255, 255, 0.7);">总课程数：</div>
+                    <div class="detail-value" style="color: white;" id="total-courses">8门</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label" style="color: rgba(255, 255, 255, 0.7);">必修课程：</div>
+                    <div class="detail-value" style="color: white;" id="required-courses">6门</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label" style="color: rgba(255, 255, 255, 0.7);">选修课程：</div>
+                    <div class="detail-value" style="color: white;" id="elective-courses">2门</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label" style="color: rgba(255, 255, 255, 0.7);">总学分：</div>
+                    <div class="detail-value" style="color: white;" id="total-credits">27学分</div>
+                </div>
+            </div>
+
+            <!-- 课程详情 -->
+            <div class="course-details">
+                <div class="details-card" id="course-detail-card">
+                    <div class="details-header">
+                        <div class="details-title">课程详情</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">课程名称：</div>
+                        <div class="detail-value" id="detail-name">数据结构</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">课程类型：</div>
+                        <div class="detail-value" id="detail-type">必修</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">授课教师：</div>
+                        <div class="detail-value" id="detail-teacher">张教授</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">上课地点：</div>
+                        <div class="detail-value" id="detail-location">逸夫楼A301</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">上课时间：</div>
+                        <div class="detail-value" id="detail-time">周二 3-4节</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">周次范围：</div>
+                        <div class="detail-value" id="detail-weeks">1-16周</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">课程学分：</div>
+                        <div class="detail-value" id="detail-credit">4学分</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+
+            <div class="timetable-container">
+                <div class="time-axis">
+                    <div class="time-header">节次</div>
+                    <div class="day-header">周一</div>
+                    <div class="day-header">周二</div>
+                    <div class="day-header">周三</div>
+                    <div class="day-header">周四</div>
+                    <div class="day-header">周五</div>
+                    <div class="day-header">周六</div>
+                    <div class="day-header">周日</div>
+                </div>
+
+                <div class="timetable" id="timetable">
+                    <!-- 时间表将通过JavaScript生成 -->
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>© 2023 大学课程表系统 | 基于HTML5、CSS3和JavaScript开发 | 支持响应式设计</p>
+                <p>数据更新时间: <span id="update-time">2023-11-15 14:30</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="details-header">
+                <div class="details-title">课程详情</div>
+            </div>
+
+            <div id="modal-detail-list"></div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentWeek = 12; // 默认当前周
+
+        // 课程数据示例
+        const courses = [
+            {
+                id: "CS101",
+                name: "数据结构",
+                type: "必修",
+                teacher: "张教授",
+                location: "逸夫楼A301",
+                weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                day: 2,  // 周二
+                time_slots: [3, 4],  // 第3-4节
+                color: "#4CAF50",
+                credit: 4
+            },
+            {
+                id: "CS102",
+                name: "算法分析",
+                type: "必修",
+                teacher: "李教授",
+                location: "科技楼B205",
+                weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                day: 4,  // 周四
+                time_slots: [1, 2],
+                color: "#2196F3",
+                credit: 3
+            },
+            {
+                id: "MA201",
+                name: "高等数学",
+                type: "必修",
+                teacher: "王教授",
+                location: "主楼C101",
+                weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                day: 1,  // 周一
+                time_slots: [1, 2],
+                color: "#FF9800",
+                credit: 5
+            },
+            {
+                id: "CS202",
+                name: "人工智能导论",
+                type: "选修",
+                teacher: "赵教授",
+                location: "信息楼D307",
+                weeks: [1, 3, 5, 7, 9, 11, 13, 15], // 单周
+                day: 3,  // 周三
+                time_slots: [5, 6],
+                color: "#9C27B0",
+                credit: 3
+            },
+            {
+                id: "CS203",
+                name: "计算机网络",
+                type: "必修",
+                teacher: "孙教授",
+                location: "实验楼E401",
+                weeks: [2, 4, 6, 8, 10, 12, 14, 16], // 双周
+                day: 3,  // 周三
+                time_slots: [5, 6],
+                color: "#F44336",
+                credit: 4
+            },
+            {
+                id: "CS103",
+                name: "数据库系统",
+                type: "必修",
+                teacher: "周教授",
+                location: "逸夫楼B203",
+                weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                day: 5,  // 周五
+                time_slots: [3, 4],
+                color: "#00BCD4",
+                credit: 3
+            },
+            {
+                id: "EL101",
+                name: "英语听说",
+                type: "选修",
+                teacher: "刘教授",
+                location: "外语楼F102",
+                weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                day: 2,  // 周二
+                time_slots: [9, 10],
+                color: "#8BC34A",
+                credit: 2
+            },
+            {
+                id: "PH101",
+                name: "大学物理",
+                type: "必修",
+                teacher: "吴教授",
+                location: "物理楼G201",
+                weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                day: 4,  // 周四
+                time_slots: [7, 8],
+                color: "#FF5722",
+                credit: 4
+            },
+            {
+                id: "PE101",
+                name: "体育",
+                type: "选修",
+                teacher: "郑教授",
+                location: "体育馆H101",
+                weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                day: 5,  // 周五
+                time_slots: [9, 10, 11],
+                color: "#795548",
+                credit: 1
+            },
+            {
+                id: "AR101",
+                name: "艺术鉴赏",
+                type: "选修",
+                teacher: "陈教授",
+                location: "艺术楼A201",
+                weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                day: 1,  // 周一
+                time_slots: [1, 2, 3],  // 合并为连续两节
+                color: "#E91E63",
+                credit: 2
+            }
+        ];
+
+        // 时间表配置 - 只显示节次
+        const timeSlots = Array.from({ length: 12 }, (_, i) => ({ label: `${i + 1}` }));
+
+        // 初始化函数
+        function initTimetable() {
+            const timetableEl = document.getElementById('timetable');
+            timetableEl.innerHTML = '';
+
+            // 添加12个时间槽
+            for (let i = 0; i < 12; i++) {
+                const slotNum = i + 1;
+
+                // 添加时间段分隔线
+                if (slotNum === 5 || slotNum === 9) {
+                    const divider = document.createElement('div');
+                    divider.className = 'divider';
+                    timetableEl.appendChild(divider);
+                }
+
+                addTimeSlot(slotNum, timeSlots[i].label);
+            }
+
+            updateStatistics();
+        }
+
+        // 添加时间槽
+        function addTimeSlot(slotNum, slotLabel) {
+            const timetableEl = document.getElementById('timetable');
+
+            // 添加时间标签
+            const timeSlotEl = document.createElement('div');
+            timeSlotEl.className = 'time-slot';
+            timeSlotEl.textContent = slotLabel;
+            timetableEl.appendChild(timeSlotEl);
+
+            // 添加每天的时间槽
+            for (let day = 1; day <= 7; day++) {
+                const daySlotEl = document.createElement('div');
+                daySlotEl.className = 'day-slot';
+                daySlotEl.dataset.day = day;
+                daySlotEl.dataset.slot = slotNum;
+                daySlotEl.style.position = 'relative'; // 为多节课卡片定位做准备
+
+                // 查找这个时间槽的课程
+                const slotCourses = courses.filter(course =>
+                    course.day === day &&
+                    course.time_slots.includes(slotNum) &&
+                    course.weeks.includes(currentWeek)
+                );
+
+                // 添加课程卡片 - 只添加连续课程的第一节课
+                const isFirstSlot = slotCourses.some(course =>
+                    course.time_slots[0] === slotNum
+                );
+
+                if (isFirstSlot) {
+                    if (slotCourses.length > 1) {
+                        const randomCourse = slotCourses[0];
+                        const courseCard = createCourseCard(randomCourse, slotCourses, slotNum);
+                        daySlotEl.appendChild(courseCard);
+                        
+                        // 设置卡片高度
+                        const duration = randomCourse.time_slots.length;
+                        if (duration > 1) {
+                            courseCard.style.gridRow = `span ${duration}`;
+                            courseCard.style.height = `calc(${duration * 100}% + ${(duration - 1) * 3}px)`;
+                        }
+                    } else {
+                        const course = slotCourses[0];
+                        const courseCard = createCourseCard(course, [], slotNum);
+                        daySlotEl.appendChild(courseCard);
+                        
+                        // 设置卡片高度
+                        const duration = course.time_slots.length;
+                        if (duration > 1) {
+                            courseCard.style.gridRow = `span ${duration}`;
+                            courseCard.style.height = `calc(${duration * 100}% + ${(duration - 1) * 3}px)`;
+                        }
+                    }
+                }
+
+                timetableEl.appendChild(daySlotEl);
+            }
+        }
+
+        // 创建课程卡片（仅显示课程名和地点）
+        function createCourseCard(course, conflictCourses, slotNum) {
+            const card = document.createElement('div');
+            card.className = 'course-card';
+            card.style.backgroundColor = course.color;
+            
+            // 如果是多节课，添加特殊类
+            const duration = course.time_slots.length;
+            if (duration > 1 && course.time_slots[0] === slotNum) {
+                card.classList.add('multi-slot');
+            }
+
+            // 课程信息
+            card.innerHTML = `
+                <div class="course-name">${course.name}</div>
+                <div class="course-location">${course.location}</div>
+            `;
+
+            // 添加重课标签
+            if (conflictCourses.length > 0) {
+                const conflictLabel = document.createElement('div');
+                conflictLabel.className = 'conflict-label';
+                conflictLabel.textContent = '重课';
+                card.appendChild(conflictLabel);
+            }
+
+            // 点击事件 - 使用箭头函数保持this上下文
+            card.addEventListener('click', (event) => {
+                // 防止事件冒泡到父元素
+                event.stopPropagation();
+                showCourseDetails([course, ...conflictCourses]);
+            });
+
+            return card;
+        }
+
+        // 更新统计信息
+        function updateStatistics() {
+            const totalCourses = courses.length;
+            const requiredCourses = courses.filter(c => c.type === "必修").length;
+            const electiveCourses = totalCourses - requiredCourses;
+            const totalCredits = courses.reduce((sum, course) => sum + course.credit, 0);
+
+            document.getElementById('total-courses').textContent = `${totalCourses}门`;
+            document.getElementById('required-courses').textContent = `${requiredCourses}门`;
+            document.getElementById('elective-courses').textContent = `${electiveCourses}门`;
+            document.getElementById('total-credits').textContent = `${totalCredits}学分`;
+        }
+
+        // 显示课程详情
+        function showCourseDetails(courses) {
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                const modal = document.getElementById('myModal');
+                const closeBtn = document.getElementsByClassName('close')[0];
+                const detailList = document.getElementById('modal-detail-list');
+                detailList.innerHTML = '';
+
+                courses.forEach((course, index) => {
+                    if (index > 0) {
+                        const divider = document.createElement('hr');
+                        detailList.appendChild(divider);
+                    }
+
+                    const detailItem = document.createElement('div');
+                    detailItem.className = 'detail-item';
+                    detailItem.innerHTML = `
+                        <div class="detail-label">课程名称：</div>
+                        <div class="detail-value">${course.name}</div>
+                    `;
+                    detailList.appendChild(detailItem);
+
+                    const typeItem = document.createElement('div');
+                    typeItem.className = 'detail-item';
+                    typeItem.innerHTML = `
+                        <div class="detail-label">课程类型：</div>
+                        <div class="detail-value">${course.type}</div>
+                    `;
+                    detailList.appendChild(typeItem);
+
+                    const teacherItem = document.createElement('div');
+                    teacherItem.className = 'detail-item';
+                    teacherItem.innerHTML = `
+                        <div class="detail-label">授课教师：</div>
+                        <div class="detail-value">${course.teacher}</div>
+                    `;
+                    detailList.appendChild(teacherItem);
+
+                    const locationItem = document.createElement('div');
+                    locationItem.className = 'detail-item';
+                    locationItem.innerHTML = `
+                        <div class="detail-label">上课地点：</div>
+                        <div class="detail-value">${course.location}</div>
+                    `;
+                    detailList.appendChild(locationItem);
+
+                    const creditItem = document.createElement('div');
+                    creditItem.className = 'detail-item';
+                    creditItem.innerHTML = `
+                        <div class="detail-label">课程学分：</div>
+                        <div class="detail-value">${course.credit}学分</div>
+                    `;
+                    detailList.appendChild(creditItem);
+
+                    const dayNames = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+                    const dayName = dayNames[course.day - 1];
+                    const slotStart = Math.min(...course.time_slots);
+                    const slotEnd = Math.max(...course.time_slots);
+                    const timeText = `${dayName} ${slotStart}-${slotEnd}节`;
+
+                    const timeItem = document.createElement('div');
+                    timeItem.className = 'detail-item';
+                    timeItem.innerHTML = `
+                        <div class="detail-label">上课时间：</div>
+                        <div class="detail-value">${timeText}</div>
+                    `;
+                    detailList.appendChild(timeItem);
+
+                    const weeksRange = `${course.weeks[0]}-${course.weeks[course.weeks.length - 1]}周`;
+                    const weeksItem = document.createElement('div');
+                    weeksItem.className = 'detail-item';
+                    weeksItem.innerHTML = `
+                        <div class="detail-label">周次范围：</div>
+                        <div class="detail-value">${weeksRange}</div>
+                    `;
+                    detailList.appendChild(weeksItem);
+                });
+
+                modal.style.display = "block";
+
+                closeBtn.onclick = function () {
+                    modal.style.display = "none";
+                }
+
+                window.onclick = function (event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+            } else {
+                const detailCard = document.getElementById('course-detail-card');
+                detailCard.innerHTML = `
+                    <div class="details-header">
+                        <div class="details-title">课程详情</div>
+                    </div>
+                `;
+
+                courses.forEach((course, index) => {
+                    if (index > 0) {
+                        const divider = document.createElement('hr');
+                        detailCard.appendChild(divider);
+                    }
+
+                    const detailItem = document.createElement('div');
+                    detailItem.className = 'detail-item';
+                    detailItem.innerHTML = `
+                        <div class="detail-label">课程名称：</div>
+                        <div class="detail-value">${course.name}</div>
+                    `;
+                    detailCard.appendChild(detailItem);
+
+                    const typeItem = document.createElement('div');
+                    typeItem.className = 'detail-item';
+                    typeItem.innerHTML = `
+                        <div class="detail-label">课程类型：</div>
+                        <div class="detail-value">${course.type}</div>
+                    `;
+                    detailCard.appendChild(typeItem);
+
+                    const teacherItem = document.createElement('div');
+                    teacherItem.className = 'detail-item';
+                    teacherItem.innerHTML = `
+                        <div class="detail-label">授课教师：</div>
+                        <div class="detail-value">${course.teacher}</div>
+                    `;
+                    detailCard.appendChild(teacherItem);
+
+                    const locationItem = document.createElement('div');
+                    locationItem.className = 'detail-item';
+                    locationItem.innerHTML = `
+                        <div class="detail-label">上课地点：</div>
+                        <div class="detail-value">${course.location}</div>
+                    `;
+                    detailCard.appendChild(locationItem);
+
+                    const creditItem = document.createElement('div');
+                    creditItem.className = 'detail-item';
+                    creditItem.innerHTML = `
+                        <div class="detail-label">课程学分：</div>
+                        <div class="detail-value">${course.credit}学分</div>
+                    `;
+                    detailCard.appendChild(creditItem);
+
+                    const dayNames = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+                    const dayName = dayNames[course.day - 1];
+                    const slotStart = Math.min(...course.time_slots);
+                    const slotEnd = Math.max(...course.time_slots);
+                    const timeText = `${dayName} ${slotStart}-${slotEnd}节`;
+
+                    const timeItem = document.createElement('div');
+                    timeItem.className = 'detail-item';
+                    timeItem.innerHTML = `
+                        <div class="detail-label">上课时间：</div>
+                        <div class="detail-value">${timeText}</div>
+                    `;
+                    detailCard.appendChild(timeItem);
+
+                    const weeksRange = `${course.weeks[0]}-${course.weeks[course.weeks.length - 1]}周`;
+                    const weeksItem = document.createElement('div');
+                    weeksItem.className = 'detail-item';
+                    weeksItem.innerHTML = `
+                        <div class="detail-label">周次范围：</div>
+                        <div class="detail-value">${weeksRange}</div>
+                    `;
+                    detailCard.appendChild(weeksItem);
+                });
+
+                // 添加动画效果
+                detailCard.style.animation = 'none';
+                detailCard.offsetHeight; // 触发重绘
+                detailCard.style.animation = 'fadeIn 0.3s ease-out forwards';
+            }
+        }
+
+        // 深色模式切换
+        document.getElementById('dark-mode-btn').addEventListener('click', function () {
+            document.body.classList.toggle('dark-mode');
+            this.classList.toggle('active');
+
+            // 保存用户偏好
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+
+            // 更新按钮图标
+            const icon = this.querySelector('i');
+            icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
+            this.innerHTML = isDarkMode ?
+                `<i class="fas fa-sun"></i> 浅色模式` :
+                `<i class="fas fa-moon"></i> 深色模式`;
+        });
+
+        // 教学周切换
+        document.getElementById('week-select').addEventListener('change', function () {
+            if (this.value === 'current') {
+                currentWeek = 12; // 默认为第12周
+            } else {
+                currentWeek = parseInt(this.value);
+            }
+
+            // 更新选择框文本
+            this.querySelector('option[value="current"]').textContent =
+                `当前周 (第${currentWeek}周)`;
+
+            // 更新周指示器
+            document.getElementById('current-week-display').textContent = currentWeek;
+
+            // 重新初始化课表
+            initTimetable();
+        });
+        
+        // 移动端菜单按钮
+        document.getElementById('menu-btn').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+            
+            // 更新图标
+            const icon = this.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+                icon.className = 'fas fa-times';
+            } else {
+                icon.className = 'fas fa-bars';
+            }
+        });
+
+        // 检查保存的深色模式设置
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            const darkModeBtn = document.getElementById('dark-mode-btn');
+            darkModeBtn.classList.add('active');
+            darkModeBtn.innerHTML = `<i class="fas fa-sun"></i> 浅色模式`;
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function () {
+            initTimetable();
+            showCourseDetails([courses[0]]); // 默认显示第一个课程详情
+
+            // 更新数据时间
+            const now = new Date();
+            document.getElementById('update-time').textContent =
+                `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        });
+    </script>
+</body>
+
+</html>
